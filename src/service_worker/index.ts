@@ -1,3 +1,4 @@
+var chrome = require("webextension-polyfill");
 async function getCurrentTabId() {
   let tab;
 	let queryOptions = { active: true, lastFocusedWindow: true };
@@ -36,7 +37,7 @@ function handleMessage(
   sendResponse: (response: any) => void
 ): boolean | null {
   switch (request.type) {
-    
+
     case "getOptions": {
       GetFakeFillerOptions().then((result) => {
         sendResponse({ options: result });
@@ -71,10 +72,10 @@ function handleMessage(
       return null;
     }
   }
- 
+
 
 if (chrome.runtime.onInstalled) {
-  chrome.runtime.onInstalled.addListener((details) => {
+  chrome.runtime.onInstalled.addListener((details:any) => {
     if (details.reason === "update") {
       try {
         if (details.previousVersion && details.previousVersion.startsWith("3.2")) {
@@ -120,7 +121,7 @@ GetFakeFillerOptions().then((options) => {
 });
 
 chrome.contextMenus.onClicked.addListener(
-  async (info) => {
+  async (info:any) => {
     if (info.menuItemId === "fake-filler-all") {
       await chrome.scripting.executeScript({
        func : fillAllInputs,
@@ -144,13 +145,13 @@ chrome.contextMenus.onClicked.addListener(
         func : fillThisInput,
         target : {
           allFrames : true,
-          tabId: await getCurrentTabId()          
+          tabId: await getCurrentTabId()
         },
       });
     }
   }
 );
-    
+
 chrome.commands.onCommand.addListener(
   async (command: string) => {
   if (command === "fill_all_inputs") {
@@ -158,7 +159,7 @@ chrome.commands.onCommand.addListener(
       func : fillAllInputs,
       target : {
         allFrames : true,
-        tabId: await getCurrentTabId()          
+        tabId: await getCurrentTabId()
       },
     });
   }
@@ -167,7 +168,7 @@ chrome.commands.onCommand.addListener(
       func : fillThisForm,
       target : {
         allFrames : true,
-        tabId: await getCurrentTabId()          
+        tabId: await getCurrentTabId()
       },
     });
   }
